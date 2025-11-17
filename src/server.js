@@ -18,6 +18,6 @@ app.get('/dot', (req, res) => {
   res.type('text/plain').send('digraph { a -> b }');
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Graphviz preview server running at http://localhost:${PORT}/`);
 });
