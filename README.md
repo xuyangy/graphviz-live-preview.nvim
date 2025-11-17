@@ -35,13 +35,23 @@ Add this to your `init.lua` or `plugins.lua`:
 4. Build and run the plugin (see Quickstart).
 
 ## Usage
-- Open a dot file in Neovim.
+- Open a `.dot` file in Neovim.
 - Run `:GraphvizPreview` to launch the live preview in your browser.
+- Your dot source will be rendered in a browser window using d3-graphviz and @hpcc-js/wasm.
 - Interact with the preview:
-  - Click nodes to trace edges.
+  - Click nodes to trace edges (upstream, downstream, bidirectional).
   - Use the search box to highlight nodes.
   - Export as SVG or dot.
 - Use dot syntax highlighting and snippets in Neovim.
+
+### Requirements
+- Node.js must be installed and available in your PATH.
+- The plugin launches the preview using a Node.js script (`src/preview.js`).
+- The browser will open automatically (macOS: `open`, Linux: `xdg-open`, Windows: `start`).
+
+### Advanced
+- You can customize the preview logic in `src/preview.js`.
+- Extend the Lua command to pass more options or enable live updates.
 
 ## Development & Testing
 - Run tests: `npx jest`
