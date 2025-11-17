@@ -1,6 +1,6 @@
 <!--
 Sync Impact Report
-Version change: 1.1.0 → 1.1.1
+Version change: 1.1.1 → 1.1.2
 List of modified principles: None
 Added sections: None
 Removed sections: None
@@ -14,7 +14,7 @@ Follow-up TODOs: None
 # Graphviz Live Preview Constitution
 
 > **Project Description:**  
-> This project provides syntax highlighting, snippets, and an interactive, zoom-, pan- and searchable, live preview with edge tracing for graphs in Graphviz (dot format).
+> This project is a Neovim plugin that provides syntax highlighting, snippets, and an interactive, zoom-, pan- and searchable, live preview with edge tracing for graphs in Graphviz (dot format).
 
 ## Core Principles
 
@@ -64,4 +64,4 @@ All errors, warnings, and key events MUST be logged in a structured, human-reada
 - Constitution version MUST be incremented according to the versioning policy below.
 - Compliance reviews are conducted quarterly or after any major release.
 
-**Version**: 1.1.1 | **Ratified**: 2025-11-17 | **Last Amended**: 2025-11-17
+**Version**: 1.1.2 | **Ratified**: 2025-11-17 | **Last Amended**: 2025-11-17
