@@ -1,19 +1,14 @@
 <!--
 Sync Impact Report
-Version change: 1.0.0 → 1.1.0
-List of modified principles:
-  - I. Live Feedback-First → I. Interactive Live Feedback
-  - II. CLI and Web Parity → II. Multi-Interface Parity
-  - V. Observability and Simplicity → V. Observability, Simplicity, and Accessibility
-Added sections:
-  - Project Description (new, at top)
+Version change: 1.1.0 → 1.1.1
+List of modified principles: None
+Added sections: None
 Removed sections: None
 Templates requiring updates:
-  ✅ .specify/templates/plan-template.md (no changes needed, aligns with new principles)
-  ✅ .specify/templates/spec-template.md (no changes needed, aligns with new principles)
-  ✅ .specify/templates/tasks-template.md (no changes needed, aligns with new principles)
-Follow-up TODOs:
-  - TODO(RATIFICATION_DATE): No prior ratification date found, must be set by project owner.
+  ✅ .specify/templates/plan-template.md (no changes needed)
+  ✅ .specify/templates/spec-template.md (no changes needed)
+  ✅ .specify/templates/tasks-template.md (no changes needed)
+Follow-up TODOs: None
 -->
 
 # Graphviz Live Preview Constitution
@@ -69,4 +64,4 @@ All errors, warnings, and key events MUST be logged in a structured, human-reada
 - Constitution version MUST be incremented according to the versioning policy below.
 - Compliance reviews are conducted quarterly or after any major release.
 
-**Version**: 1.1.0 | **Ratified**: TODO(RATIFICATION_DATE): No prior ratification date found | **Last Amended**: 2025-11-06
+**Version**: 1.1.1 | **Ratified**: 2025-11-17 | **Last Amended**: 2025-11-17
