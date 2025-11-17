@@ -1,5 +1,5 @@
 {
-  "name": "graphviz-live-preview",
+  "name": "graphviz-live-preview.nvim",
   "version": "1.0.0",
   "description": "https://github.com/tintinweb/vscode-interactive-graphviz https://github.com/EFanZh/Graphviz-Preview",
   "main": "index.js",

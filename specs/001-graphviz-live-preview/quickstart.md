@@ -1,4 +1,4 @@
-# Quickstart: Graphviz Live Preview Neovim Plugin
+# Quickstart: graphviz-live-preview.nvim
 
 ## Prerequisites
 - Neovim (latest stable)

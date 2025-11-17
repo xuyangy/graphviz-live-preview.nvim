@@ -1,4 +1,6 @@
-# Graphviz Live Preview for Neovim
+# graphviz-live-preview.nvim
+
+A Neovim plugin providing interactive live previews for dot/Graphviz files, inspired by [vscode-interactive-graphviz](https://github.com/tintinweb/vscode-interactive-graphviz).
 
 A Neovim plugin providing interactive live previews for dot/Graphviz files, inspired by [vscode-interactive-graphviz](https://github.com/tintinweb/vscode-interactive-graphviz).
 
