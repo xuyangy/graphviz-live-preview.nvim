@@ -7,9 +7,12 @@
     html, body { height: 100%; margin: 0; padding: 0; }
     #graphviz-container { width: 100vw; height: 100vh; }
     .edge-highlight path { stroke: #f00 !important; stroke-width: 3 !important; }
+    #status { position: fixed; top: 10px; right: 10px; z-index: 20; background: #fff8dc; padding: 6px 10px; border-radius: 4px; box-shadow: 0 1px 4px #0003; font-size: 12px; color: #333; }
   </style>
 </head>
 <body>
+  <div id="status">Loading graphviz preview...</div>
+
   <div style="position:fixed;top:10px;left:10px;z-index:10;background:#fff;padding:8px;border-radius:4px;box-shadow:0 2px 8px #0002;">
     <input id="search-box" type="text" placeholder="Search node..." style="width:140px;">
     <button id="export-svg">Export SVG</button>
@@ -17,32 +20,68 @@
   </div>
   <div id="graphviz-container" style="margin-top:50px;"></div>
 
-  <!-- d3 + d3-graphviz + wasm from CDN -->
+  <!-- Load dependencies: d3, hpcc wasm, then d3-graphviz (order matters) -->
   <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/index.umd.js"></script>
   <script src="https://unpkg.com/d3-graphviz@5.0.2/build/d3-graphviz.min.js"></script>
-  <script src="https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/index.min.js"></script>
 
   <script>
     (function () {
       const containerSelector = '#graphviz-container';
       let currentDotSource = '';
 
+      function setStatus(msg) {
+        var statusEl = document.getElementById('status');
+        if (!statusEl) return;
+        if (!msg) {
+          statusEl.textContent = '';
+          statusEl.style.display = 'none';
+        } else {
+          statusEl.textContent = msg;
+          statusEl.style.display = 'block';
+        }
+      }
+
       async function loadAndRenderDot() {
         try {
+          setStatus('Fetching /dot from server...');
           const res = await fetch('/dot');
+          if (!res.ok) {
+            setStatus('Failed to fetch /dot: HTTP ' + res.status);
+            return;
+          }
           const dot = await res.text();
           currentDotSource = dot || '';
           if (!dot || !dot.trim()) {
-            console.warn('graphviz-live-preview: /dot returned empty content');
+            setStatus('Server returned empty dot source');
             return;
           }
 
-          // Use d3-graphviz via d3.select(...).graphviz()
-          d3.select(containerSelector)
-            .graphviz()
-            .renderDot(dot);
+          if (typeof d3 === 'undefined' || !d3.select) {
+            setStatus('d3 is not available in the page');
+            return;
+          }
+
+          const selection = d3.select(containerSelector);
+          if (typeof selection.graphviz !== 'function') {
+            setStatus('d3-graphviz plugin is not available (check network / CDN)');
+            return;
+          }
+
+          setStatus('Rendering graph...');
+          try {
+            selection
+              .graphviz()
+              .renderDot(dot);
+            // If we get here without throwing, hide status after a short delay
+            setTimeout(function () { setStatus(''); }, 500);
+          } catch (e) {
+            console.error('graphviz-live-preview: renderDot error', e);
+            setStatus('Render error: ' + (e && e.message ? e.message : e));
+          }
         } catch (e) {
           console.error('graphviz-live-preview: failed to load /dot', e);
+          setStatus('Failed to load /dot: ' + (e && e.message ? e.message : e));
         }
       }
 
@@ -72,6 +111,15 @@
       }
 
       document.addEventListener('DOMContentLoaded', function () {
+        // Configure wasm folder if available
+        try {
+          if (window['@hpcc-js/wasm'] && window['@hpcc-js/wasm'].wasmFolder) {
+            window['@hpcc-js/wasm'].wasmFolder('https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/');
+          }
+        } catch (e) {
+          console.warn('graphviz-live-preview: failed to configure wasmFolder', e);
+        }
+
         // Load and render the current dot source
         loadAndRenderDot();
 
