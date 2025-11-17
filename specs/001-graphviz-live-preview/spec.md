@@ -1,88 +1,103 @@
-# Feature Specification: graphviz-live-preview
+# Feature Specification: Graphviz Live Preview
 
 **Feature Branch**: `001-graphviz-live-preview`  
-**Created**: [DATE]  
+**Created**: 2025-11-17  
 **Status**: Draft  
-**Input**: User description:  
-> "it should work exactly as https://github.com/tintinweb/vscode-interactive-graphviz except that it's a neovim plugin instead of a vscode extension."
-
----
+**Input**: User description: "this plugin should:
+Renders dot/Graphviz sources in an interactive live preview.
+Updates preview as you type.
+Search for nodes in the graph.
+Export the graph as svg or dot.
+Interactive edge tracing. Click on a node to highlight incoming and outgoing edges (ESC to unselect). The Direction of the highlighting can be changed (options: single, upstream, downstream, bidirectional)
+Configurable render engine, render options & tracing preference: e.g. transitionDelay, transitionDuration."
 
 ## User Scenarios & Testing *(mandatory)*
 
-### User Story 1 - Live Preview While Editing (Priority: P1)
-- **Description:** As a Neovim user, I want to see a live preview of my Graphviz diagram as I edit the source code, so I can immediately visualize changes.
-- **Why this priority:** Core value; enables instant feedback and rapid iteration.
-- **Independent Test:** Open a .dot file, edit, and verify preview updates.
-- **Acceptance Scenarios:**
-  1. **Given** a valid .dot file, **When** the user edits and saves, **Then** the preview updates in the external viewer within 2 seconds.
-  2. **Given** a valid .dot file, **When** the user makes a syntax error, **Then** an error message is shown in the preview.
+### User Story 1 - Interactive Live Preview (Priority: P1)
+
+As a Neovim user editing a dot/Graphviz file, I want to see an interactive live preview of my graph that updates as I type, so I can immediately visualize changes and catch errors early.
+
+**Why this priority**: Immediate feedback is critical for usability and learning, enabling users to iterate quickly and avoid mistakes.
+
+**Independent Test**: Can be fully tested by editing a dot file and observing real-time updates in the preview window.
+
+**Acceptance Scenarios**:
+
+1. **Given** a valid dot file, **When** the user edits the file, **Then** the preview updates instantly to reflect changes.
+2. **Given** a syntax error, **When** the user saves or types, **Then** the preview displays a clear, non-blocking error message.
 
 ---
 
-### User Story 2 - Manual Preview Trigger (Priority: P2)
-- **Description:** As a user, I want to manually trigger the preview update, so I can control when rendering occurs, especially for large files.
-- **Why this priority:** Useful for large files or performance-sensitive workflows.
-- **Independent Test:** User triggers preview via command and sees updated diagram.
-- **Acceptance Scenarios:**
-  1. **Given** a .dot file, **When** the user runs the preview command, **Then** the diagram updates in the external viewer.
-  2. **Given** a large .dot file, **When** the user attempts auto preview, **Then** the system switches to manual mode and informs the user.
+### User Story 2 - Search and Export (Priority: P2)
+
+As a user viewing a large graph, I want to search for nodes and export the graph as SVG or dot, so I can quickly locate elements and share or reuse my work.
+
+**Why this priority**: Searching and exporting are essential for working with complex graphs and integrating with other tools.
+
+**Independent Test**: Can be tested by searching for a node and exporting the current graph to SVG/dot formats.
+
+**Acceptance Scenarios**:
+
+1. **Given** a graph with many nodes, **When** the user searches for a node, **Then** the matching node is highlighted in the preview.
+2. **Given** a rendered graph, **When** the user selects export, **Then** the graph is saved as SVG or dot.
 
 ---
 
-### User Story 3 - Customizing Preview Behavior (Priority: P3)
-- **Description:** As a user, I want to configure preview settings (auto/manual, output format, file size limit), so the plugin fits my workflow.
-- **Why this priority:** Enhances usability for diverse user needs.
-- **Independent Test:** User changes settings and verifies preview behavior.
-- **Acceptance Scenarios:**
-  1. **Given** the plugin settings, **When** the user changes output format, **Then** the preview reflects the new format in the external viewer.
-  2. **Given** the plugin settings, **When** the user changes the file size limit, **Then** the system applies the new threshold for switching preview modes.
+### User Story 3 - Interactive Edge Tracing (Priority: P3)
+
+As a user exploring a graph, I want to click on a node to highlight incoming and outgoing edges, change the direction of highlighting, and unselect with ESC, so I can understand graph structure and relationships.
+
+**Why this priority**: Edge tracing helps users analyze connectivity and flow, especially in complex graphs.
+
+**Independent Test**: Can be tested by clicking nodes, changing direction options, and pressing ESC to unselect.
+
+**Acceptance Scenarios**:
+
+1. **Given** a graph, **When** the user clicks a node, **Then** incoming and outgoing edges are highlighted.
+2. **Given** a highlighted node, **When** the user changes direction (single, upstream, downstream, bidirectional), **Then** the preview updates accordingly.
+3. **Given** a highlighted node, **When** the user presses ESC, **Then** all highlights are cleared.
 
 ---
 
-## Edge Cases
-- What happens when the Graphviz code is invalid?  
-  → Error message is shown in the external viewer.
-- How does the system handle very large diagrams?  
-  → System switches to manual preview mode and notifies the user when file size exceeds configurable limit.
-- What if the external viewer cannot be opened?  
-  → System displays an error message in Neovim and provides troubleshooting steps.
+### Edge Cases
 
----
+- What happens when the dot source is invalid or incomplete?
+- How does the system handle extremely large graphs (performance, UI responsiveness)?
+- What if a user searches for a node that does not exist?
+- How are conflicting render/tracing options resolved?
+- What if the user tries to export an empty or invalid graph?
+
+## Clarifications
+
+### Session 2025-11-17
+- Q: What render engine should the plugin use? → A: Use what https://github.com/tintinweb/vscode-interactive-graphviz is using (d3-graphviz powered by @hpcc-js/wasm)
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
-- **FR-001:** System MUST provide live preview of Graphviz diagrams in Neovim.
-- **FR-002:** System MUST update preview on user action (save/edit/command).
-- **FR-003:** System MUST display errors for invalid Graphviz code.
-- **FR-004:** Users MUST be able to configure preview behavior (auto/manual, output format, file size limit).
-- **FR-005:** System MUST support at least SVG output format.
-- **FR-006:** System MUST display preview in an external viewer, following the model of markdown-preview.nvim for Neovim.
-- **FR-007:** System MUST switch to manual preview mode when file size exceeds a configurable limit, and inform the user.
-- **FR-008:** System MUST update preview automatically on save by default, but switch to manual trigger when file size exceeds a configurable limit.
 
-### Key Entities
-- **Graphviz Source Code:** The text representing the diagram.
-- **Rendered Diagram:** The visual output (SVG, PNG, etc.).
-- **Preview Window (External Viewer):** The browser or app displaying the diagram, launched from Neovim.
+- **FR-001**: System MUST render dot/Graphviz sources in an interactive live preview within Neovim.
+- **FR-002**: System MUST update the preview in real-time as the user types or saves changes.
+- **FR-003**: Users MUST be able to search for nodes in the graph and highlight results.
+- **FR-004**: Users MUST be able to export the current graph as SVG or dot format.
+- **FR-005**: System MUST support interactive edge tracing: clicking a node highlights incoming/outgoing edges, with direction options (single, upstream, downstream, bidirectional), and ESC unselects.
+- **FR-006**: System MUST provide configurable render engine, render options, and tracing preferences (e.g., transitionDelay, transitionDuration).
+- **FR-007**: System MUST display clear, non-blocking error messages for invalid dot sources.
+- **FR-008**: System MUST use d3-graphviz powered by @hpcc-js/wasm for rendering, matching the approach in vscode-interactive-graphviz.
 
----
+### Key Entities *(include if feature involves data)*
+
+- **Graph**: Represents the dot/Graphviz source, including nodes, edges, and attributes.
+- **Node**: Represents a graph node, with attributes (ID, label, position, etc.).
+- **Edge**: Represents a connection between nodes, with direction and attributes.
+- **RenderConfig**: Stores user preferences for render engine, options, and tracing behavior.
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
-- **SC-001:** Users see updated diagram in the external viewer within 2 seconds of saving edits (for files below size limit).
-- **SC-002:** 95% of valid Graphviz files render correctly in the external viewer.
-- **SC-003:** Error feedback is shown for invalid code in the external viewer.
-- **SC-004:** Users can toggle preview on/off and configure preview mode and file size limit easily.
-- **SC-005:** User satisfaction (measured via feedback or survey) is above 80%.
 
----
-
-## Assumptions
-- Default output format is SVG unless user changes it.
-- Preview updates automatically on save unless file size exceeds configurable limit.
-- Error messages are shown in the external viewer.
-- Large files trigger a switch to manual preview mode, with user notification.
-- External viewer is modeled after markdown-preview.nvim for Neovim.
+- **SC-001**: 95% of valid dot files render correctly in live preview with <1s update latency.
+- **SC-002**: Users can search and highlight nodes in graphs with up to 1000 nodes in <2s.
+- **SC-003**: Exported SVG/dot files match the current preview and are usable in external tools.
+- **SC-004**: 90% of users successfully use edge tracing features without external documentation.
+- **SC-005**: No blocking errors or crashes when handling invalid dot sources or large graphs.
