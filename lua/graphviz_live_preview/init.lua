@@ -21,8 +21,18 @@ M.plugin_root = get_plugin_root()
 
 function M.setup()
   vim.api.nvim_create_user_command("GraphvizPreview", function()
-    -- Get current buffer contents (reserved for future /dot endpoint)
+    -- Get current buffer contents and write to a file that the Node server can read
     local dot_source = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+    local dot_path = M.plugin_root .. "src/current.dot"
+    local ok, err = pcall(function()
+      local f = assert(io.open(dot_path, "w"))
+      f:write(dot_source)
+      f:close()
+    end)
+    if not ok then
+      vim.notify("graphviz-live-preview.nvim: failed to write dot file: " .. tostring(err), vim.log.levels.ERROR)
+      return
+    end
 
     if vim.fn.executable("node") ~= 1 then
       vim.notify("graphviz-live-preview.nvim: Node.js is not available in PATH", vim.log.levels.ERROR)
