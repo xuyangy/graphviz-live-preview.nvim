@@ -1,0 +1,21 @@
+# dot.snippets for UltiSnips or LuaSnip
+snippet digraph
+
+digraph ${1:G} {
+    ${0}
+}
+endsnippet
+
+snippet node
+${1:node} [label="${2:label}"];
+endsnippet
+
+snippet edge
+${1:src} -> ${2:dst} [label="${3:label}"];
+endsnippet
+
+snippet subgraph
+subgraph ${1:cluster} {
+    ${0}
+}
+endsnippet

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Graphviz Live Preview</title>
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; }
+    #graphviz-container { width: 100vw; height: 100vh; }
+    .edge-highlight path { stroke: #f00 !important; stroke-width: 3 !important; }
+  </style>
+</head>
+<body>
+  <div style="position:fixed;top:10px;left:10px;z-index:10;background:#fff;padding:8px;border-radius:4px;box-shadow:0 2px 8px #0002;">
+    <input id="search-box" type="text" placeholder="Search node..." style="width:140px;">
+    <button id="export-svg">Export SVG</button>
+    <button id="export-dot">Export Dot</button>
+  </div>
+  <div id="graphviz-container" style="margin-top:50px;"></div>
+  <script src="https://unpkg.com/d3-graphviz/build/d3-graphviz.min.js"></script>
+  <script src="https://unpkg.com/@hpcc-js/wasm/dist/index.min.js"></script>
+  <script type="module">
+    import { renderGraphviz } from './graphvizRenderer.js';
+    let currentDotSource = '';
+    let currentOptions = {};
+    // Listen for messages from the plugin
+    window.addEventListener('message', async (event) => {
+      const { dotSource, options } = event.data;
+      currentDotSource = dotSource;
+      currentOptions = options || {};
+      await renderGraphviz('graphviz-container', dotSource, options);
+    });
+    // Search functionality
+    document.getElementById('search-box').addEventListener('input', (e) => {
+      const query = e.target.value.trim();
+      highlightNode(query);
+    });
+    function highlightNode(nodeId) {
+      const svg = document.querySelector('#graphviz-container svg');
+      if (!svg) return;
+      svg.querySelectorAll('.node').forEach(node => {
+        node.classList.remove('node-highlight');
+        const title = node.querySelector('title')?.textContent;
+        if (title && nodeId && title.includes(nodeId)) {
+          node.classList.add('node-highlight');
+        }
+      });
+    }
+    // Export SVG
+    document.getElementById('export-svg').addEventListener('click', () => {
+      const svg = document.querySelector('#graphviz-container svg');
+      if (!svg) return;
+      const serializer = new XMLSerializer();
+      const svgStr = serializer.serializeToString(svg);
+      downloadFile('graph.svg', svgStr, 'image/svg+xml');
+    });
+    // Export Dot
+    document.getElementById('export-dot').addEventListener('click', () => {
+      downloadFile('graph.dot', currentDotSource, 'text/plain');
+    });
+    function downloadFile(filename, content, mime) {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    // Highlight style
+    const style = document.createElement('style');
+    style.textContent = `.node.node-highlight ellipse, .node.node-highlight polygon, .node.node-highlight path { stroke: #00f !important; stroke-width: 3 !important; }`;
+    document.head.appendChild(style);
+    // Initial render (optional)
+    // await renderGraphviz('graphviz-container', 'digraph { a -> b }');
+  </script>
+</body>
+</html>

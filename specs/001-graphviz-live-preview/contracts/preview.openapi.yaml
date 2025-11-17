@@ -1,0 +1,91 @@
+openapi: 3.0.0
+info:
+  title: Graphviz Live Preview API
+  version: 1.0.0
+paths:
+  /preview:
+    post:
+      summary: Render dot/Graphviz source and return SVG
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dotSource:
+                  type: string
+      responses:
+        '200':
+          description: SVG output
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+  /search:
+    get:
+      summary: Search for nodes in the graph
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matches:
+                    type: array
+                    items:
+                      type: string
+  /export:
+    post:
+      summary: Export graph as SVG or dot
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                format:
+                  type: string
+                  enum: [svg, dot]
+      responses:
+        '200':
+          description: Exported file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+  /trace:
+    post:
+      summary: Highlight edges for a node
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodeId:
+                  type: string
+                direction:
+                  type: string
+                  enum: [single, upstream, downstream, bidirectional]
+      responses:
+        '200':
+          description: Trace result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  highlightedEdges:
+                    type: array
+                    items:
+                      type: string
