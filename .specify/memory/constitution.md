@@ -1,50 +1,72 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+Version change: 1.0.0 → 1.1.0
+List of modified principles:
+  - I. Live Feedback-First → I. Interactive Live Feedback
+  - II. CLI and Web Parity → II. Multi-Interface Parity
+  - V. Observability and Simplicity → V. Observability, Simplicity, and Accessibility
+Added sections:
+  - Project Description (new, at top)
+Removed sections: None
+Templates requiring updates:
+  ✅ .specify/templates/plan-template.md (no changes needed, aligns with new principles)
+  ✅ .specify/templates/spec-template.md (no changes needed, aligns with new principles)
+  ✅ .specify/templates/tasks-template.md (no changes needed, aligns with new principles)
+Follow-up TODOs:
+  - TODO(RATIFICATION_DATE): No prior ratification date found, must be set by project owner.
+-->
+
+# Graphviz Live Preview Constitution
+
+> **Project Description:**  
+> This project provides syntax highlighting, snippets, and an interactive, zoom-, pan- and searchable, live preview with edge tracing for graphs in Graphviz (dot format).
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Interactive Live Feedback
+All user-facing features MUST provide immediate, visible feedback for any change to the Graphviz source, including syntax highlighting and snippet insertion. The live preview MUST support zoom, pan, search, and edge tracing, updating on every valid edit. Rendering errors MUST be surfaced clearly and non-blocking.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+**Rationale:** Fast, interactive feedback and discoverability are essential for usability and learning; users must see the impact of their changes instantly and be able to explore complex graphs efficiently.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Multi-Interface Parity
+All core rendering, parsing, and highlighting logic MUST be accessible via both CLI and web interfaces, with consistent behavior and output. CLI must support stdin/stdout, and the web UI must support copy-paste, file upload, and all interactive features (zoom, pan, search, edge tracing).
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+**Rationale:** Ensures accessibility for both automation and interactive use, and prevents feature drift between interfaces.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Test-Driven Development (NON-NEGOTIABLE)
+All new features and bug fixes (including syntax highlighting, snippets, and preview interactivity) MUST be accompanied by automated tests. Tests MUST be written before implementation (TDD). No code is merged without passing tests for all supported platforms.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+**Rationale:** Prevents regressions, ensures reliability, and enables safe refactoring.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Integration and Contract Testing
+Integration tests MUST cover the full rendering and preview pipeline, including error handling, file I/O, interactive features, and cross-platform differences. Contract tests MUST be added for any public API, CLI flag, or UI feature.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+**Rationale:** Ensures that the system works as a whole and that public interfaces remain stable.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. Observability, Simplicity, and Accessibility
+All errors, warnings, and key events MUST be logged in a structured, human-readable format. The codebase MUST avoid unnecessary complexity; simple, composable modules are preferred. The web UI MUST be accessible via keyboard and screen reader. Versioning follows MAJOR.MINOR.PATCH (semver).
+
+**Rationale:** Observability aids debugging and support; simplicity reduces maintenance burden and onboarding time; accessibility ensures inclusivity.
+
+## Additional Constraints
+
+- Only open-source dependencies with OSI-approved licenses are permitted.
+- All user data (files, diagrams) must be processed locally; no data is sent to third-party services.
+- Syntax highlighting and snippets MUST support the full Graphviz (dot) language specification.
+
+## Development Workflow
+
+- All changes require code review by at least one other contributor.
+- Every pull request MUST pass all tests and linters before merge.
+- Feature branches MUST be named as `feature/[short-description]`.
+- Releases are cut from `main` after passing all checks.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- This constitution supersedes all other project practices.
+- Amendments require a pull request, approval by at least two maintainers, and a migration plan if breaking.
+- All PRs and reviews MUST verify compliance with these principles.
+- Constitution version MUST be incremented according to the versioning policy below.
+- Compliance reviews are conducted quarterly or after any major release.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.1.0 | **Ratified**: TODO(RATIFICATION_DATE): No prior ratification date found | **Last Amended**: 2025-11-06
