@@ -22,7 +22,7 @@
 
   <!-- Load dependencies: d3, hpcc wasm, then d3-graphviz (order matters) -->
   <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
-  <script src="https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/index.min.js"></script>
+  <script src="https://unpkg.com/@hpcc-js/wasm@1.12.4/dist/index.min.js"></script>
   <script src="https://unpkg.com/d3-graphviz@5.0.2/build/d3-graphviz.min.js"></script>
 
   <script>
@@ -113,9 +113,9 @@
       document.addEventListener('DOMContentLoaded', function () {
         // Configure wasm folder if available
         try {
-          // hpcc-js/wasm UMD exposes a global `hpccWasm` in browsers
-          if (window.hpccWasm && window.hpccWasm.wasmFolder) {
-            window.hpccWasm.wasmFolder('https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/');
+          // hpcc-js/wasm UMD exposes a global `@hpcc-js/wasm` in browsers
+          if (window['@hpcc-js/wasm'] && window['@hpcc-js/wasm'].wasmFolder) {
+            window['@hpcc-js/wasm'].wasmFolder('https://unpkg.com/@hpcc-js/wasm@1.12.4/dist/');
           }
         } catch (e) {
           console.warn('graphviz-live-preview: failed to configure wasmFolder', e);
