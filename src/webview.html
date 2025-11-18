@@ -20,10 +20,9 @@
   </div>
   <div id="graphviz-container" style="margin-top:50px;"></div>
 
-  <!-- Load dependencies: d3, hpcc wasm, then d3-graphviz (order matters) -->
+  <!-- Load dependencies: d3 (for search/highlight) and hpcc-js/wasm Graphviz UMD (for layout) -->
   <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
-  <script src="https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/graphviz.umd.js" type="javascript/worker"></script>
-  <script src="https://unpkg.com/d3-graphviz@5.0.2/build/d3-graphviz.min.js"></script>
+  <script src="https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/graphviz.umd.js"></script>
 
   <script>
     (function () {
@@ -57,26 +56,31 @@
             return;
           }
 
-          if (typeof d3 === 'undefined' || !d3.select) {
-            setStatus('d3 is not available in the page');
+          if (typeof window === 'undefined') {
+            setStatus('window object is not available');
             return;
           }
 
-          const selection = d3.select(containerSelector);
-          if (typeof selection.graphviz !== 'function') {
-            setStatus('d3-graphviz plugin is not available (check network / CDN)');
+          const hpccWasm = window['@hpcc-js/wasm'];
+          if (!hpccWasm || !hpccWasm.Graphviz || typeof hpccWasm.Graphviz.load !== 'function') {
+            setStatus('hpcc-js/wasm Graphviz is not available');
             return;
           }
 
           setStatus('Rendering graph...');
           try {
-            selection
-              .graphviz()
-              .renderDot(dot);
-            // If we get here without throwing, hide status after a short delay
+            const containerEl = document.querySelector(containerSelector);
+            if (!containerEl) {
+              setStatus('Container element not found');
+              return;
+            }
+            const graphviz = await hpccWasm.Graphviz.load();
+            const svg = graphviz.layout(dot, 'svg', 'dot');
+            containerEl.innerHTML = svg;
+            // Hide status after a short delay
             setTimeout(function () { setStatus(''); }, 500);
           } catch (e) {
-            console.error('graphviz-live-preview: renderDot error', e);
+            console.error('graphviz-live-preview: render error', e);
             setStatus('Render error: ' + (e && e.message ? e.message : e));
           }
         } catch (e) {
@@ -111,11 +115,11 @@
       }
 
       document.addEventListener('DOMContentLoaded', function () {
-        // Configure wasm folder if available
+        // Configure wasm folder if available (optional for UMD)
         try {
-          // hpcc-js/wasm Graphviz UMD exposes a global `graphviz` in browsers
-          if (window.graphviz && window.graphviz.wasmFolder) {
-            window.graphviz.wasmFolder('https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/');
+          var hpccWasm = window['@hpcc-js/wasm'];
+          if (hpccWasm && typeof hpccWasm.wasmFolder === 'function') {
+            hpccWasm.wasmFolder('https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/');
           }
         } catch (e) {
           console.warn('graphviz-live-preview: failed to configure wasmFolder', e);
