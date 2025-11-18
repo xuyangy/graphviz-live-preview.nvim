@@ -19,7 +19,10 @@ end
 
 M.plugin_root = get_plugin_root()
 
+M.server_job_id = nil
+
 local function write_current_dot(dot_source)
+
   local dot_path = M.plugin_root .. "src/current.dot"
   local ok, err = pcall(function()
     local f = assert(io.open(dot_path, "w"))
@@ -40,7 +43,6 @@ function M.setup()
       return
     end
 
-
     if vim.fn.executable("node") ~= 1 then
       vim.notify("graphviz-live-preview.nvim: Node.js is not available in PATH", vim.log.levels.ERROR)
       return
@@ -57,8 +59,10 @@ function M.setup()
     local job_id = vim.fn.jobstart({ "node", server_script }, {
       detach = true,
     })
-
+    M.server_job_id = job_id
+ 
     if job_id <= 0 then
+
       vim.notify("graphviz-live-preview.nvim: failed to start Node server (jobstart returned " .. tostring(job_id) .. ")", vim.log.levels.ERROR)
       return
     end
@@ -97,11 +101,34 @@ function M.setup()
     pattern = { "*.dot" },
     callback = function(args)
       local bufnr = args.buf
-      local dot_source = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+      local dot_source = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\\n")
       write_current_dot(dot_source)
     end,
   })
+
+  vim.api.nvim_create_autocmd("BufUnload", {
+    group = group,
+    pattern = { "*.dot" },
+    callback = function()
+      local bufs = vim.api.nvim_list_bufs()
+      local dot_open = false
+      for _, b in ipairs(bufs) do
+        if vim.api.nvim_buf_is_loaded(b) then
+          local name = vim.api.nvim_buf_get_name(b)
+          if name:match("%.dot$") then
+            dot_open = true
+            break
+          end
+        end
+      end
+      if not dot_open and M.server_job_id and M.server_job_id > 0 then
+        vim.fn.jobstop(M.server_job_id)
+        M.server_job_id = nil
+      end
+    end,
+  })
 end
+
 
 M.install = util.install
 
