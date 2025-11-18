@@ -56,9 +56,7 @@ function M.setup()
     end
 
     -- Start the Node.js server; it will handle port-in-use gracefully
-    local job_id = vim.fn.jobstart({ "node", server_script }, {
-      detach = true,
-    })
+    local job_id = vim.fn.jobstart({ "node", server_script })
     M.server_job_id = job_id
  
     if job_id <= 0 then
@@ -122,6 +120,16 @@ function M.setup()
         end
       end
       if not dot_open and M.server_job_id and M.server_job_id > 0 then
+        vim.fn.jobstop(M.server_job_id)
+        M.server_job_id = nil
+      end
+    end,
+  })
+
+  vim.api.nvim_create_autocmd("VimLeavePre", {
+    group = group,
+    callback = function()
+      if M.server_job_id and M.server_job_id > 0 then
         vim.fn.jobstop(M.server_job_id)
         M.server_job_id = nil
       end
