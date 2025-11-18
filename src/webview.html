@@ -61,12 +61,13 @@
             return;
           }
 
-          const hpccWasm = window['@hpcc-js/wasm'];
-          if (!hpccWasm || !hpccWasm.Graphviz || typeof hpccWasm.Graphviz.load !== 'function') {
+          const hpccWasmGlobal = window['@hpcc-js/wasm'] || window.hpccWasm || {};
+          const GraphvizCtor = hpccWasmGlobal.Graphviz || window.Graphviz;
+          if (!GraphvizCtor || typeof GraphvizCtor.load !== 'function') {
             setStatus('hpcc-js/wasm Graphviz is not available');
             return;
           }
-
+ 
           setStatus('Rendering graph...');
           try {
             const containerEl = document.querySelector(containerSelector);
@@ -74,7 +75,7 @@
               setStatus('Container element not found');
               return;
             }
-            const graphviz = await hpccWasm.Graphviz.load();
+            const graphviz = await GraphvizCtor.load();
             const svg = graphviz.layout(dot, 'svg', 'dot');
             containerEl.innerHTML = svg;
             // Hide status after a short delay
@@ -117,9 +118,10 @@
       document.addEventListener('DOMContentLoaded', function () {
         // Configure wasm folder if available (optional for UMD)
         try {
-          var hpccWasm = window['@hpcc-js/wasm'];
-          if (hpccWasm && typeof hpccWasm.wasmFolder === 'function') {
-            hpccWasm.wasmFolder('https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/');
+          var hpccWasmGlobal = window['@hpcc-js/wasm'] || window.hpccWasm || {};
+          var GraphvizCtor = hpccWasmGlobal.Graphviz || window.Graphviz;
+          if (GraphvizCtor && typeof GraphvizCtor.wasmFolder === 'function') {
+            GraphvizCtor.wasmFolder('https://unpkg.com/@hpcc-js/wasm@2.19.0/dist/');
           }
         } catch (e) {
           console.warn('graphviz-live-preview: failed to configure wasmFolder', e);
