@@ -7,13 +7,13 @@
 
 ## Summary
 
-Primary requirement: Provide a Neovim plugin for interactive live preview, search, export, and edge tracing of dot/Graphviz files, matching the feature set of vscode-interactive-graphviz, using d3-graphviz and related dependencies.
-Technical approach: Integrate d3-graphviz (powered by @hpcc-js/wasm) for rendering, port edge tracking and webview handling from referenced VSCode extensions, and use dot language support/snippets from vscode-graphviz.
+Primary requirement: Provide a Neovim plugin for interactive live preview, search, export, and (eventually) edge tracing of dot/Graphviz files, matching the spirit of vscode-interactive-graphviz while staying simple for Neovim.
+Technical approach: Implement a Lua Neovim plugin that writes the current buffer to a dot file, a small Node.js Express server that serves `webview.html` and a `/dot` endpoint, and a browser webview that renders using a Graphviz renderer backed by @hpcc-js/wasm and d3 for DOM interaction.
 
 ## Technical Context
 
-**Language/Version**: NEEDS CLARIFICATION (recommend Lua, TypeScript, or Python; must support d3-graphviz integration)
-**Primary Dependencies**: d3-graphviz, @hpcc-js/wasm, jquery.graphviz.svg, vscode-graphviz (for webview and dot support)
+**Language/Version**: Lua (Neovim plugin), Node.js (Express server), browser JavaScript/HTML
+**Primary Dependencies**: @hpcc-js/wasm, d3 (for DOM/search), Express, Neovim Lua API
 **Storage**: N/A (no persistent storage required)
 **Testing**: NEEDS CLARIFICATION (recommend Busted for Lua, Jest for JS/TS, or pytest for Python)
 **Target Platform**: Neovim (cross-platform)
@@ -52,19 +52,19 @@ specs/001-graphviz-live-preview/
 ### Source Code (repository root)
 
 ```text
+lua/
+└── graphviz_live_preview/   # Neovim plugin (Lua)
+
 src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+├── server.js                # Express server serving /dot and webview
+├── webview.html             # Browser UI for preview/search/export
+└── ...                      # Renderer glue, TS/JS helpers
 
 tests/
-├── contract/
-├── integration/
-└── unit/
+└── graphvizRenderer.test.ts # Jest tests for renderer logic
 ```
 
-**Structure Decision**: Single project (Neovim plugin) with source in `src/` and tests in `tests/`.
+**Structure Decision**: Single project (Neovim plugin + Node webview) with Lua in `lua/`, Node/JS in `src/`, and tests in `tests/`.
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**

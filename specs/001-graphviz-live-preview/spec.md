@@ -2,7 +2,7 @@
 
 **Feature Branch**: `001-graphviz-live-preview`  
 **Created**: 2025-11-17  
-**Status**: Draft  
+**Status**: In Progress  
 **Input**: User description: "this plugin should:
 Renders dot/Graphviz sources in an interactive live preview.
 Updates preview as you type.
@@ -81,9 +81,9 @@ As a user exploring a graph, I want to click on a node to highlight incoming and
 - **FR-003**: Users MUST be able to search for nodes in the graph and highlight results.
 - **FR-004**: Users MUST be able to export the current graph as SVG or dot format.
 - **FR-005**: System MUST support interactive edge tracing: clicking a node highlights incoming/outgoing edges, with direction options (single, upstream, downstream, bidirectional), and ESC unselects.
-- **FR-006**: System MUST provide configurable render engine, render options, and tracing preferences (e.g., transitionDelay, transitionDuration).
+- **FR-006**: System MUST provide configurable render options and tracing preferences (e.g., transitionDelay, transitionDuration) in at least one supported renderer.
 - **FR-007**: System MUST display clear, non-blocking error messages for invalid dot sources.
-- **FR-008**: System MUST use d3-graphviz powered by @hpcc-js/wasm for rendering, matching the approach in vscode-interactive-graphviz.
+- **FR-008**: System MUST use a browser-based Graphviz renderer backed by @hpcc-js/wasm. d3-graphviz MAY be used but is not required.
 
 ### Key Entities *(include if feature involves data)*
 

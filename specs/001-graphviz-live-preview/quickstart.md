@@ -2,8 +2,8 @@
 
 ## Prerequisites
 - Neovim (latest stable)
-- Node.js (for TypeScript/JS plugin host)
-- Install plugin dependencies: d3-graphviz, @hpcc-js/wasm, jquery.graphviz.svg
+- Node.js (used to run a small Express preview server)
+- Install plugin dependencies via `npm install` in the plugin root (this will install @hpcc-js/wasm and other JS deps)
 
 ## Installation
 
@@ -38,12 +38,12 @@ Add this to your `init.lua` or `plugins.lua`:
 
 ### Requirements
 - Node.js must be installed and available in your PATH.
-- The plugin launches the preview using a Node.js script (`src/preview.js`).
+- The plugin launches the preview by starting `node src/server.js` (Express) and opening `http://localhost:8080/webview.html`.
 - The browser will open automatically (macOS: `open`, Linux: `xdg-open`, Windows: `start`).
 
 ### Advanced
-- You can customize the preview logic in `src/preview.js`.
-- Extend the Lua command to pass more options or enable live updates.
+- You can customize the preview logic in `src/server.js` and `src/webview.html`.
+- Extend the Lua command in `lua/graphviz_live_preview/init.lua` to pass more options or tweak server behavior.
 
 ## Troubleshooting
 - If preview does not update, check for syntax errors in the dot source.

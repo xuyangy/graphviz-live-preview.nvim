@@ -9,21 +9,21 @@ description: "Task list for Graphviz Live Preview Neovim Plugin"
 
 ## Phase 1: Setup (Shared Infrastructure)
 
-- [ ] T001 Create project structure in src/, tests/, and contracts/
-- [ ] T002 Initialize Node.js/TypeScript plugin with d3-graphviz, @hpcc-js/wasm, jquery.graphviz.svg dependencies
-- [ ] T003 [P] Configure Jest for testing in tests/
-- [ ] T004 [P] Add README and quickstart.md documentation
+- [x] T001 Create project structure in lua/, src/, tests/, and contracts/
+- [ ] T002 Initialize Node.js/TypeScript plugin with Graphviz rendering backed by @hpcc-js/wasm (current MVP uses plain JS and Express)
+- [x] T003 [P] Configure Jest for testing in tests/
+- [x] T004 [P] Add README and quickstart.md documentation
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-- [ ] T005 Setup Neovim node-client integration in src/
-- [ ] T006 [P] Implement webview infrastructure for live preview in src/lib/webview.ts (adapt from vscode-interactive-graphviz/src/features/interactiveWebview.ts)
-- [ ] T007 [P] Implement dot language syntax highlighting and snippets in src/lib/dot-syntax.ts (adapt from vscode-interactive-graphviz/syntaxes/ and vscode-interactive-graphviz/snippets/)
-- [ ] T008 [P] Implement RenderConfig entity in src/models/renderConfig.ts
-- [ ] T009 [P] Implement Graph, Node, Edge entities in src/models/
-- [ ] T010 [P] Setup error handling and logging infrastructure in src/services/logging.ts
+- [x] T005 Setup Neovim integration in `lua/graphviz_live_preview/init.lua` to write the current buffer to a dot file and launch the preview server
+- [x] T006 [P] Implement webview infrastructure for live preview in `src/webview.html` (using @hpcc-js/wasm + d3)
+- [x] T007 [P] Add dot language syntax highlighting and snippets via `syntax/dot.vim` and `snippets/dot.snippets`
+- [ ] T008 [P] Implement RenderConfig entity (future) for configurable render/tracing options
+- [ ] T009 [P] Implement Graph, Node, Edge entities (future) if needed for advanced features
+- [ ] T010 [P] Setup error handling and logging infrastructure in Node server and webview
 
 ---
 
@@ -37,10 +37,10 @@ description: "Task list for Graphviz Live Preview Neovim Plugin"
 - [ ] T012 [P] [US1] Integration test for live preview in tests/integration/test_live_preview.ts
 
 ### Implementation for User Story 1
-- [ ] T013 [P] [US1] Implement /preview endpoint in src/lib/preview.ts (adapt from vscode-interactive-graphviz/src/features/preview.ts)
-- [ ] T014 [US1] Integrate d3-graphviz rendering in src/lib/preview.ts
-- [ ] T015 [US1] Implement error display for invalid dot source in src/lib/preview.ts
-- [ ] T016 [US1] Add keyboard navigation and accessibility support in src/lib/webview.ts
+- [x] T013 [P] [US1] Implement /dot endpoint in `src/server.js` and polling-based live preview in `src/webview.html`
+- [ ] T014 [US1] Integrate richer rendering options (e.g., transitions, zoom/pan controls) into the webview
+- [x] T015 [US1] Implement error display for invalid dot source in `src/webview.html` status area
+- [ ] T016 [US1] Add keyboard navigation and accessibility improvements in the webview
 
 ---
 
