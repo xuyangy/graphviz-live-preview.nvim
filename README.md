@@ -5,12 +5,13 @@ A Neovim plugin providing interactive live previews for dot/Graphviz files, insp
 A Neovim plugin providing interactive live previews for dot/Graphviz files, inspired by [vscode-interactive-graphviz](https://github.com/tintinweb/vscode-interactive-graphviz).
 
 ## Features
-- **Live Preview:** Render dot/Graphviz files in a browser webview using d3-graphviz and @hpcc-js/wasm.
-- **Edge Tracing:** Click nodes to highlight incoming/outgoing edges (upstream, downstream, bidirectional). ESC clears highlights.
+- **Live Preview:** Render dot/Graphviz files in a browser webview using a Graphviz renderer backed by @hpcc-js/wasm.
 - **Search:** Search for nodes in the preview and highlight matches.
 - **Export:** Download the graph as SVG or dot format.
 - **Dot Syntax Highlighting:** Vim syntax file for dot language.
 - **Snippets:** Common dot constructs for UltiSnips/LuaSnip.
+
+Edge tracing and advanced tracing options are planned but not implemented yet.
 
 ## Installation
 
@@ -37,21 +38,27 @@ Add this to your `init.lua` or `plugins.lua`:
 ## Usage
 - Open a `.dot` file in Neovim.
 - Run `:GraphvizPreview` to launch the live preview in your browser.
-- Your dot source will be rendered in a browser window using d3-graphviz and @hpcc-js/wasm.
+- The plugin writes the current buffer to `src/current.dot`, starts a small Node.js Express server (`src/server.js`), and opens `http://localhost:8080/webview.html`.
+- The webview polls `/dot` and re-renders whenever the dot source changes on disk (e.g. when you save the buffer).
 - Interact with the preview:
-  - Click nodes to trace edges (upstream, downstream, bidirectional).
   - Use the search box to highlight nodes.
   - Export as SVG or dot.
 - Use dot syntax highlighting and snippets in Neovim.
 
 ### Requirements
 - Node.js must be installed and available in your PATH.
-- The plugin launches the preview using a Node.js script (`src/preview.js`).
+- The plugin launches the preview by starting `node src/server.js` (Express) and opening `http://localhost:8080/webview.html`.
 - The browser will open automatically (macOS: `open`, Linux: `xdg-open`, Windows: `start`).
 
 ### Advanced
-- You can customize the preview logic in `src/preview.js`.
-- Extend the Lua command to pass more options or enable live updates.
+- You can customize the preview logic in `src/server.js` and `src/webview.html`.
+- Extend the Lua command in `lua/graphviz_live_preview/init.lua` to pass more options or tweak server behavior.
+
+### Preview server lifecycle
+- Running `:GraphvizPreview` starts the Node.js preview server and opens the browser.
+- Closing or deleting `.dot` buffers with `:bd`, `:bdelete`, or `:bwipeout` will stop the server once there are no loaded `.dot` buffers left.
+- A normal `:q` that only closes a window (leaving the buffer loaded/hidden) will **not** stop the server.
+- Exiting Neovim (`:q` from the last window, `:qa`, etc.) will also stop the server via a `VimLeavePre` autocmd.
 
 ## Development & Testing
 - Run tests: `npx jest`
