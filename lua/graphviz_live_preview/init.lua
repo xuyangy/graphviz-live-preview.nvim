@@ -38,7 +38,7 @@ end
 function M.setup()
   vim.api.nvim_create_user_command("GraphvizPreview", function()
     -- Get current buffer contents and write to a file that the Node server can read
-    local dot_source = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+    local dot_source = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n"):gsub("\\n", "\n")
     if not write_current_dot(dot_source) then
       return
     end
@@ -99,12 +99,12 @@ function M.setup()
     pattern = { "*.dot" },
     callback = function(args)
       local bufnr = args.buf
-      local dot_source = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+      local dot_source = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n"):gsub("\\n", "\n")
       write_current_dot(dot_source)
     end,
   })
 
-  vim.api.nvim_create_autocmd("BufUnload", {
+  vim.api.nvim_create_autocmd({ "BufUnload", "BufWipeout", "BufDelete" }, {
     group = group,
     pattern = { "*.dot" },
     callback = function()
