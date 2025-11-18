@@ -50,11 +50,16 @@
             return;
           }
           const dot = await res.text();
-          currentDotSource = dot || '';
           if (!dot || !dot.trim()) {
-            setStatus('Server returned empty dot source');
+            if (!silent) {
+              setStatus('Server returned empty dot source');
+            }
             return;
           }
+          if (!force && dot === currentDotSource) {
+            return;
+          }
+          currentDotSource = dot || '';
 
           if (typeof window === 'undefined') {
             setStatus('window object is not available');
@@ -126,9 +131,13 @@
         } catch (e) {
           console.warn('graphviz-live-preview: failed to configure wasmFolder', e);
         }
+ 
+        // Load and render the current dot source once, then poll for changes
+        loadAndRenderDot(true, false);
+        setInterval(function () {
+          loadAndRenderDot(false, true);
+        }, 1000);
 
-        // Load and render the current dot source
-        loadAndRenderDot();
 
         // Search
         const searchBox = document.getElementById('search-box');
