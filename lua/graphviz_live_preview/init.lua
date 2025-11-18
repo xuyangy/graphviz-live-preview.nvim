@@ -101,7 +101,7 @@ function M.setup()
     pattern = { "*.dot" },
     callback = function(args)
       local bufnr = args.buf
-      local dot_source = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\\n")
+      local dot_source = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
       write_current_dot(dot_source)
     end,
   })
