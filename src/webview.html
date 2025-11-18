@@ -91,7 +91,9 @@
           }
         } catch (e) {
           console.error('graphviz-live-preview: failed to load /dot', e);
-          setStatus('Failed to load /dot: ' + (e && e.message ? e.message : e));
+          if (!silent) {
+            setStatus('Failed to load /dot: ' + (e && e.message ? e.message : e));
+          }
         }
       }
 
