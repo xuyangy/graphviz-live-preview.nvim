@@ -41,9 +41,13 @@
         }
       }
 
-      async function loadAndRenderDot() {
+      async function loadAndRenderDot(force, silent) {
+        if (typeof force === 'undefined') force = false;
+        if (typeof silent === 'undefined') silent = false;
         try {
-          setStatus('Fetching /dot from server...');
+          if (!silent) {
+            setStatus('Fetching /dot from server...');
+          }
           const res = await fetch('/dot');
           if (!res.ok) {
             setStatus('Failed to fetch /dot: HTTP ' + res.status);
